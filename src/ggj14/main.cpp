@@ -8,6 +8,6 @@ int main()
 
 	je::Game game(640, 480, 60);
 	game.getTexManager().setPath("resources/img/");
-	game.setLevel(new ggj14::Level(&game, 640, 480));
+	game.setLevel(new ggj14::Level(&game));
     return game.execute();
 }

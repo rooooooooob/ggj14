@@ -1,7 +1,7 @@
 #include "ggj14/Block.hpp"
 
 #include "ggj14/Level.hpp"
-#include <iostream>
+
 namespace ggj14
 {
 
@@ -16,12 +16,11 @@ Block::Block(Level *level, const sf::Vector2f& pos, Colour colour)
 {
 	box.setPosition(pos);
 	this->updateDrawable();
-	std::cout << colour;
 }
 
 bool Block::isActive() const
 {
-	return active > 0;
+	return colour == Colour::White || active > 0;
 }
 
 /*		private		*/
@@ -32,32 +31,36 @@ void Block::draw(sf::RenderTarget& target, const sf::RenderStates& states) const
 
 void Block::onUpdate()
 {
-	if (level->getActiveColour() != colour)
+	if (colour != Colour::White)
 	{
-		if (active > 0)
+		if (level->getActiveColour() != colour)
 		{
-			active -= BLOCK_CHANGE_RATE;
-			this->updateDrawable();
+			if (active > 0)
+			{
+				active -= BLOCK_CHANGE_RATE;
+				this->updateDrawable();
+			}
+			else
+				active = 0;
 		}
 		else
-			active = 0;
-	}
-	else
-	{
-		if (active < 1)
 		{
-			active += BLOCK_CHANGE_RATE;
-			this->updateDrawable();
+			if (active < 1)
+			{
+				active += BLOCK_CHANGE_RATE;
+				this->updateDrawable();
+			}
+			else
+				active = 1;
 		}
-		else
-			active = 1;
 	}
 }
 
 void Block::updateDrawable()
 {
 	sf::Color col = sfColours[colour];
-	col.a = 255.f * active;
+	if (colour != Colour::White)
+		col.a = 255.f * active;
 	box.setFillColor(col);
 }
 

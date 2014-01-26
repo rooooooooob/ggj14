@@ -11,16 +11,22 @@ namespace ggj14
 class Level : public je::Level
 {
 public:
-	Level(je::Game *game, int width, int height);
+	Level(je::Game *game);
 
 	Colour getActiveColour() const;
+
+	void setActiveColour(Colour colour);
 
 private:
 	void onUpdate() override;
 
 	void onDraw(sf::RenderTarget& target) const override;
 
-	sf::RectangleShape box;
+	void loadTiles(const std::string& layerName, int tileWidth, int tileHeight, int tilesAcross, int tilesHigh, unsigned int const * const * tiles) override;
+
+	void loadEntities(const std::string& layerName, const std::vector<EntityPrototype>& prototypes) override;
+
+
 	Colour activeColour;
 };
 

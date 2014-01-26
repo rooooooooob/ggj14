@@ -1,10 +1,11 @@
 #include "ggj14/Player.hpp"
-#include <iostream>
+
 #include "jam-engine/Core/Game.hpp"
 #include "jam-engine/Core/GamepadPredefs.hpp"
 #include "jam-engine/Utility/Math.hpp"
 
 #include "ggj14/Level.hpp"
+#include "ggj14/Block.hpp"
 
 namespace ggj14
 {
@@ -53,7 +54,18 @@ void Player::onUpdate()
 		veloc.x -= 0.5;
 	je::limit(veloc.x, -4.f, 4.f);
 
-	if (pos.y + getDimensions().y + 4 >= level->getHeight())
+	std::vector<Entity*> collisions;
+	level->findCollisions(collisions, this, "Block", 0, 1);
+	bool entityBelow = false;
+	for (Entity *e : collisions)
+	{
+		if (((Block*) e)->isActive())
+		{
+			entityBelow = true;
+			break;
+		}
+	}
+	if (entityBelow)
 	{
 		veloc.y = 0;
 		if (input.isActionPressed("jump"))
