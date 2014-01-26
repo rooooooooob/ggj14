@@ -20,6 +20,7 @@ private:
 
 	void onUpdate() override;
 
+	Level *level;
 	je::Controller input;
 	sf::RectangleShape box;
 	sf::Vector2f veloc;

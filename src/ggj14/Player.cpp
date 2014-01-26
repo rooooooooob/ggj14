@@ -12,6 +12,7 @@ namespace ggj14
 
 Player::Player(Level *level, const sf::Vector2f& pos)
 	:je::Entity(level, "Player", pos, sf::Vector2i(32, 32))
+	,level(level)
 	,input(level->getGame().getInput())
 	,veloc(0, 0)
 	,prevPos(pos)
@@ -65,8 +66,22 @@ void Player::onUpdate()
 			break;
 		}
 	}
+	collisions.clear();
 	if (entityBelow)
 	{
+		if (je::abs(veloc.y) > 0)
+		{
+			level->findCollisions(collisions, this, "Block", 0, 1);
+			bool goBelow = false;
+			for (Entity *e : collisions)
+			{
+				if (((Block*) e)->isActive())
+				{
+					entityBelow = true;
+					break;
+				}
+			}
+		}
 		veloc.y = 0;
 		if (input.isActionPressed("jump"))
 		{
@@ -84,6 +99,8 @@ void Player::onUpdate()
 	level->setCameraPosition(pos);
 
 	prevPos = pos;
+
+	box.setFillColor(sfColours[level->getActiveColour()]);
 
 	//	update drawables
 	box.setPosition(pos);

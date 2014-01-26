@@ -1,5 +1,7 @@
-#include "ggj14/Block.hpp"
+#include "ggj14/Spikes.hpp"
 
+#include "jam-engine/Core/Game.hpp"
+#include "jam-engine/Graphics/TexManager.hpp"
 #include "jam-engine/Utility/Math.hpp"
 
 #include "ggj14/Level.hpp"
@@ -9,29 +11,29 @@ namespace ggj14
 
 const float BLOCK_CHANGE_RATE = 3;
 
-Block::Block(Level *level, const sf::Vector2f& pos, Colour colour)
-	:je::Entity(level, "Block", pos, sf::Vector2i(32, 32))
+Spikes::Spikes(Level *level, const sf::Vector2f& pos, Colour colour)
+	:je::Entity(level, "Spikes", pos, sf::Vector2i(32, 32))
 	,level(level)
 	,colour(colour)
 	,active(0)
-	,box(sf::Vector2f(getDimensions().x, getDimensions().y))
+	,sprite(level->getGame().getTexManager().get("spikes.png"))
 {
-	box.setPosition(pos);
+	sprite.setPosition(pos);
 	this->updateDrawable();
 }
 
-bool Block::isActive() const
+bool Spikes::isActive() const
 {
 	return colour == Colour::White || active > 0;
 }
 
 /*		private		*/
-void Block::draw(sf::RenderTarget& target, const sf::RenderStates& states) const
+void Spikes::draw(sf::RenderTarget& target, const sf::RenderStates& states) const
 {
-	target.draw(box, states);
+	target.draw(sprite, states);
 }
 
-void Block::onUpdate()
+void Spikes::onUpdate()
 {
 //	if (isActive())
 //		level->testCollision(this, "fuck");
@@ -61,13 +63,13 @@ void Block::onUpdate()
 					this->updateDrawable();
 }
 
-void Block::updateDrawable()
+void Spikes::updateDrawable()
 {
 	sf::Color col = sfColours[colour];
 	je::limit(active, 0.f, 255.f);
 	if (colour != Colour::White)
 		col.a = active;
-	box.setFillColor(col);
+	sprite.setColor(col);
 }
 
 }

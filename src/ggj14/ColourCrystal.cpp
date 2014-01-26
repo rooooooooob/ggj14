@@ -16,6 +16,7 @@ ColourCrystal::ColourCrystal(Level *level, const sf::Vector2f& pos, Colour colou
 	,sprite(level->getGame().getTexManager().get("colour_crystal.png"))
 {
 	sprite.setPosition(pos);
+	sprite.setColor(sfColours[colour]);
 }
 
 void ColourCrystal::draw(sf::RenderTarget& target, const sf::RenderStates& states) const
