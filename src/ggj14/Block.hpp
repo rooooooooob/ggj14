@@ -6,6 +6,7 @@
 #include "jam-engine/Core/Entity.hpp"
 
 #include "ggj14/Colours.hpp"
+#include "ggj14/ColourChanger.hpp"
 
 namespace ggj14
 {
@@ -29,7 +30,7 @@ private:
 
 	Level *level;
 	Colour colour;
-	float active;
+	ColourChanger colourChanger;
 	sf::RectangleShape box;
 };
 
