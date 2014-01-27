@@ -40,7 +40,7 @@ void ColourChanger::update()
 
 bool ColourChanger::isActive() const
 {
-	return colour == Colour::White || active > 0;
+	return colour == Colour::White || active > 0.3f;
 }
 
 sf::Color ColourChanger::getSFColor() const

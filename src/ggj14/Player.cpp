@@ -1,5 +1,5 @@
 #include "ggj14/Player.hpp"
-
+#include "jam-engine/Utility/Assert.hpp"
 #include "jam-engine/Core/Game.hpp"
 #include "jam-engine/Core/GamepadPredefs.hpp"
 #include "jam-engine/Utility/Math.hpp"
@@ -49,53 +49,42 @@ void Player::draw(sf::RenderTarget& target, const sf::RenderStates& states) cons
 
 void Player::onUpdate()
 {
-	if (input.isActionHeld("right"))
-		veloc.x += 0.5;
-	if (input.isActionHeld("left"))
-		veloc.x -= 0.5;
-	je::limit(veloc.x, -4.f, 4.f);
-
-	std::vector<Entity*> collisions;
-	level->findCollisions(collisions, this, "Block", 0, 1);
-	bool entityBelow = false;
-	for (Entity *e : collisions)
+	int newY = level->rayCastManually(this, "Block", [](Entity *e)->bool{return((Block*)e)->isActive();}, sf::Vector2f(0, veloc.y)).y;
+	if (newY == prevPos.y)
 	{
-		if (((Block*) e)->isActive())
-		{
-			entityBelow = true;
-			break;
-		}
-	}
-	collisions.clear();
-	if (entityBelow)
-	{
-		if (je::abs(veloc.y) > 0)
-		{
-			level->findCollisions(collisions, this, "Block", 0, 1);
-			bool goBelow = false;
-			for (Entity *e : collisions)
-			{
-				if (((Block*) e)->isActive())
-				{
-					entityBelow = true;
-					break;
-				}
-			}
-		}
 		veloc.y = 0;
 		if (input.isActionPressed("jump"))
 		{
 			veloc.y = -9;
 		}
-		pos.y = prevPos.y;
 	}
 	else
 	{
 		veloc.y += 0.3;
 	}
 
-	pos += veloc;
+	if (input.isActionHeld("right"))
+		veloc.x += 0.5;
+	else if (input.isActionHeld("left"))
+		veloc.x -= 0.5;
+	else if (newY == prevPos.y)
+	{
+		if (veloc.x > 0.5)
+			veloc.x -= 0.5;
+		else if (veloc.x < -0.5)
+			veloc.x += 0.5;
+		else
+			veloc.x = 0;
+	}
+	je::limit(veloc.x, -4.f, 4.f);
 
+
+	pos.y -= 1;
+	int newX = level->rayCastManually(this, "Block", [](Entity *e)->bool{return((Block*)e)->isActive();}, sf::Vector2f(veloc.x, 0)).x;
+	if (pos.x == newX)
+		veloc.x = 0;
+	pos.x = newX;
+	pos.y = newY;
 	level->setCameraPosition(pos);
 
 	prevPos = pos;

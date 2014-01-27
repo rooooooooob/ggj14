@@ -1,5 +1,6 @@
 #include "ggj14/Level.hpp"
 
+#include "jam-engine/Utility/Assert.hpp"
 #include "jam-engine/Utility/Random.hpp"
 
 #include "ggj14/Block.hpp"
@@ -54,7 +55,7 @@ void Level::loadTiles(const std::string& layerName, int tileWidth, int tileHeigh
 	else if (layerName == "Purple")
 		col = Colour::Purple;
 	else
-		exit(666);
+		JE_ERROR("Invalid Colour");
 
 	for (int y = 0; y < tilesHigh; ++y)
 	{
@@ -95,7 +96,7 @@ void Level::loadEntities(const std::string& layerName, const std::vector<EntityP
 			this->addEntity(new Player(this, sf::Vector2f(e.x, e.y)));
 			break;
 		default:
-			exit(1337);
+			JE_ERROR("Unhandled entity id");
 			break;
 		}
 	}
